@@ -1,5 +1,4 @@
 ﻿# API-TestingModel
-# API-TestingModel
 
 This project is a simple automated API testing model. It runs tests on different API endpoints and generates results in JSON format along with an HTML dashboard report.
 
@@ -28,3 +27,4 @@ This project is a simple automated API testing model. It runs tests on different
    cd API-TestingModel
 
 <img width="1920" height="1100" alt="API AUTO MODEL" src="https://github.com/user-attachments/assets/36e511ce-7aa4-4587-8f67-cbe53457a59b" />
+
