@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Results Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .success-card {
+            border-left: 5px solid #27ae60;
+        }
+        
+        .success-card .card-value {
+            color: #27ae60;
+        }
+        
+        .error-card {
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .error-card .card-value {
+            color: #e74c3c;
+        }
+        
+        .total-card {
+            border-left: 5px solid #3498db;
+        }
+        
+        .total-card .card-value {
+            color: #3498db;
+        }
+        
+        .success-rate-card {
+            border-left: 5px solid #f39c12;
+        }
+        
+        .success-rate-card .card-value {
+            color: #f39c12;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        
+        .results-table {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .table-header h3 {
+            font-size: 1.4rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .method-get {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .method-post {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-200 {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .status-404 {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .endpoint {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 API Test Results Dashboard</h1>
+            <p>Generated on: <strong>August 11, 2025 at 4:12 PM</strong></p>
+        </div>
+        
+        <div class="summary-cards">
+            <div class="card total-card">
+                <div class="card-icon">📊</div>
+                <h3>Total Tests</h3>
+                <div class="card-value">5</div>
+                <p>API endpoints tested</p>
+            </div>
+            
+            <div class="card success-card">
+                <div class="card-icon">✅</div>
+                <h3>Successful</h3>
+                <div class="card-value">3</div>
+                <p>Tests passed</p>
+            </div>
+            
+            <div class="card error-card">
+                <div class="card-icon">❌</div>
+                <h3>Failed</h3>
+                <div class="card-value">2</div>
+                <p>Tests failed</p>
+            </div>
+            
+            <div class="card success-rate-card">
+                <div class="card-icon">📈</div>
+                <h3>Success Rate</h3>
+                <div class="card-value">60%</div>
+                <p>Overall performance</p>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <div class="chart-container">
+                <h3>📈 Test Results Overview</h3>
+                <canvas id="resultsChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>🌐 HTTP Status Codes</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="results-table">
+            <div class="table-header">
+                <h3>🔍 Detailed Test Results</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Result</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="timestamp">16:12:30</td>
+                        <td class="endpoint">/</td>
+                        <td><span class="method-get">GET</span></td>
+                        <td class="status-200">200</td>
+                        <td><span class="status-success">✅ SUCCESS</span></td>
+                        <td>Server is healthy</td>
+                    </tr>
+                    <tr>
+                        <td class="timestamp">16:12:30</td>
+                        <td class="endpoint">/api/v1/auth/signup</td>
+                        <td><span class="method-post">POST</span></td>
+                        <td class="status-200">200</td>
+                        <td><span class="status-success">✅ SUCCESS</span></td>
+                        <td>OTP send successfully</td>
+                    </tr>
+                    <tr>
+                        <td class="timestamp">16:12:30</td>
+                        <td class="endpoint">/api/v1/auth/signin</td>
+                        <td><span class="method-post">POST</span></td>
+                        <td class="status-404">404</td>
+                        <td><span class="status-error">❌ FAILED</span></td>
+                        <td>User not exists!</td>
+                    </tr>
+                    <tr>
+                        <td class="timestamp">16:12:30</td>
+                        <td class="endpoint">/api/v1/auth/forget-password</td>
+                        <td><span class="method-post">POST</span></td>
+                        <td class="status-404">404</td>
+                        <td><span class="status-error">❌ FAILED</span></td>
+                        <td>User not found</td>
+                    </tr>
+                    <tr>
+                        <td class="timestamp">16:12:30</td>
+                        <td class="endpoint">/api/v1/auth/social-signin</td>
+                        <td><span class="method-post">POST</span></td>
+                        <td class="status-200">200</td>
+                        <td><span class="status-success">✅ SUCCESS</span></td>
+                        <td>Signin successfully</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Results Chart
+        const resultsCtx = document.getElementById('resultsChart').getContext('2d');
+        new Chart(resultsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Successful', 'Failed'],
+                datasets: [{
+                    data: [3, 2],
+                    backgroundColor: [
+                        '#27ae60',
+                        '#e74c3c'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Codes Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'bar',
+            data: {
+                labels: ['200 OK', '404 Not Found'],
+                datasets: [{
+                    label: 'Count',
+                    data: [3, 2],
+                    backgroundColor: [
+                        '#3498db',
+                        '#e74c3c'
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

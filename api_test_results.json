@@ -1,0 +1,88 @@
+[
+  {
+    "timestamp": "2025-08-11T16:12:30.229086",
+    "endpoint": "/",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "message": "Server is healthy",
+    "response": "{\"message\":\"Express server is running:(\"}"
+  },
+  {
+    "timestamp": "2025-08-11T16:12:30.322050",
+    "endpoint": "/api/v1/auth/signup",
+    "method": "POST",
+    "status_code": 200,
+    "success": true,
+    "message": "OTP send successfully",
+    "response": {
+      "statusCode": 200,
+      "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6IlRlc3QgVXNlciBBdXRvIiwiZW1haWwiOiJ0ZXN0dXNlcjE3NTQ5MDcxNTBAZXhhbXBsZS5jb20iLCJwaG9uZU51bWJlciI6Iis4ODAxMjM0NTY3ODkwIiwicGFzc3dvcmQiOiJUZXN0UGFzc3dvcmQxMjNAISIsIm90cCI6IjI5ODk2NCIsImlhdCI6MTc1NDkwNzEwNiwiZXhwIjoxNzU0OTA3NDA2fQ.UPDOytJ31FQeRsHpznpzG8IEDPmE28xhG3-cFa4bgkc",
+        "otp": "298964"
+      },
+      "message": "OTP send successfully",
+      "meta": null,
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-08-11T16:12:30.411958",
+    "endpoint": "/api/v1/auth/signin",
+    "method": "POST",
+    "status_code": 404,
+    "success": false,
+    "message": "User not exists!",
+    "response": {
+      "success": false,
+      "message": "User not exists!",
+      "errorMessages": [
+        {
+          "path": "",
+          "message": "User not exists!"
+        }
+      ],
+      "stack": "Error: User not exists!\n    at Object.signinIntoDB (C:\\projects\\steady_hands\\src\\app\\modules\\Auth\\auth.service.ts:98:11)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at C:\\projects\\steady_hands\\src\\app\\modules\\Auth\\auth.controller.ts:54:18"
+    }
+  },
+  {
+    "timestamp": "2025-08-11T16:12:30.501647",
+    "endpoint": "/api/v1/auth/forget-password",
+    "method": "POST",
+    "status_code": 404,
+    "success": false,
+    "message": "User not found",
+    "response": {
+      "success": false,
+      "message": "User not found",
+      "errorMessages": [
+        {
+          "path": "",
+          "message": "User not found"
+        }
+      ],
+      "stack": "Error: User not found\n    at Object.forgotPassword (C:\\projects\\steady_hands\\src\\app\\modules\\Auth\\auth.service.ts:483:11)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at C:\\projects\\steady_hands\\src\\app\\modules\\Auth\\auth.controller.ts:99:18"
+    }
+  },
+  {
+    "timestamp": "2025-08-11T16:12:30.789822",
+    "endpoint": "/api/v1/auth/social-signin",
+    "method": "POST",
+    "status_code": 200,
+    "success": true,
+    "message": "Signin successfully",
+    "response": {
+      "statusCode": 200,
+      "data": {
+        "fullName": "Social User",
+        "email": "social1754907150@example.com",
+        "role": "CLIENT",
+        "image": "https://example.com/profile.jpg",
+        "isProfile": false
+      },
+      "message": "Signin successfully",
+      "meta": null,
+      "success": true
+    }
+  }
+]
